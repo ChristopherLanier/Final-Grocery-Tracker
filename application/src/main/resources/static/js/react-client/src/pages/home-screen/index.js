@@ -13,10 +13,10 @@ const HomeScreen = () => {
   const [loadingNonPerishables, setLoadingNonPerishables] = useState(true);
   const [nonPerishables, setNonPerishables] = useState(null);
 
-// ^^^This is state management for perishables and nonperishables^^^
+  // ^^^This is state management for perishables and nonperishables^^^
 
 
-// requests that renders data upon the page loading//
+  // requests that renders data upon the page loading//
   useEffect(() => {
     const fetchData = async () => {
       const result = await Axios(`http://localhost:8080/perishables`);
@@ -26,7 +26,7 @@ const HomeScreen = () => {
       setLoadingPerishables(false)
     }
     !perishables && fetchData();
-    
+
   }, [perishables]);
 
 
@@ -35,7 +35,7 @@ const HomeScreen = () => {
       const result = await Axios(`http://localhost:8080/non-perishables`);
       setNonPerishables(result.data);
     }
-    
+
     if (nonPerishables) {
       setLoadingNonPerishables(false)
     }
@@ -46,7 +46,7 @@ const HomeScreen = () => {
   // ^^^requests that renders data upon the page loading^^^//
 
 
-const handleSubmit = (e, item) => {
+  const handleSubmit = (e, item) => {
     e.preventDefault();
 
     const userData = {
@@ -56,11 +56,14 @@ const handleSubmit = (e, item) => {
 
     };
 
-    Axios.post(`http://localhost:8080/list-items/add-item`,)
+    Axios.post('http://localhost:8080/list-items/add-item', userData).then((response) => {
+      console.log(response.status);
+      console.log('DATA', response.data);
+    });
 
-}
+  }
 
-//Logic for displaying data after being rendered//
+  //Logic for displaying data after being rendered//
   return (
     <div>
       {loadingPerishables ? <h3>Loading...</h3> :
@@ -77,11 +80,11 @@ const handleSubmit = (e, item) => {
 
                 <form onSubmit={(e) => handleSubmit(e, perishableItem)}>
                   <button type="submit">Add to Grocery List</button>
-
                 </form>
 
-             </div>
-                
+
+              </div>
+
 
             ))}
           </ul>
@@ -98,16 +101,19 @@ const handleSubmit = (e, item) => {
                 <h3>{nonPerishableItem.name}</h3>
                 <p>Quantity: {nonPerishableItem.quantity}</p>
                 <p>Price: {nonPerishableItem.price}</p>
-             </div>
+                <form onSubmit={(e) => handleSubmit(e, nonPerishableItem)}>
+                  <button type="submit">Add to Grocery List</button>
+                </form>
+              </div>
 
             ))}
           </ul>
         </div>
       }
 
-        
+
     </div>
-    //Logic for displaying data after being rendered//
+    //^^Logic for displaying data after being rendered^^//
   )
 }
 
